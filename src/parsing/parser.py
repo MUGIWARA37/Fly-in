@@ -71,9 +71,9 @@ class MapParser:
         zone_type = metadata.get("zone", "normal")
         if zone_type not in ("normal", "blocked", "restricted", "priority"):
             raise ValueError(f"Semantic error: Invalid zone type '{zone_type}'. Expected: normal, blocked, restricted, priority.")
-        max_drones: int | float = validate_positive_int(metadata.get("max_drones", "1"))
+        max_drones: int = validate_positive_int(metadata.get("max_drones", "1"))
         if hub_type in ("start", "end"):
-            max_drones = float("inf")
+            max_drones = 999999999
         self.zones[name] = {
             "x": x,
             "y": y,
