@@ -32,3 +32,13 @@ def split_connection(connection_name: str) -> Tuple[str, str]:
     if not n1 or not n2 or '-' in n2:
         raise ValueError()
     return (n1, n2)
+
+def validate_positive_int(line: str) -> int:
+    try:
+        value = int(line)
+        if value > 0:
+            return(value)
+        else:
+            raise ValueError("the number is negative !!")
+    except Exception as e:
+        raise ValueError(e)
