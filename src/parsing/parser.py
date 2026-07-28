@@ -3,7 +3,7 @@ from .tokens import *
 from .exceptions import ParseError
 
 class MapParser:
-    def __init__(self, filepath: str):
+    def __init__(self, filepath: str) -> None:
         self.filepath = filepath
         self.nb_drones: int | None = None
         self.start_hub_count:int = 0
