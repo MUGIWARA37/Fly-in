@@ -42,4 +42,15 @@ class Graph:
                 lst.append(connection.zone_a)
         
         return lst
+
+    def get_move_cost(self, zone_name: str) -> float:
+        """Returns the movement cost to enter a zone based on its type."""
+        zone = self.zones[zone_name]
+        costs: Dict[str, float] = {
+            "normal": 1.0,
+            "restricted": 2.0,
+            "priority": 0.9,
+            "blocked": float("inf"),
+        }
+        return costs.get(zone.zone_type, 1.0)
         
