@@ -50,7 +50,14 @@ class Graph:
             "normal": 1.0,
             "restricted": 2.0,
             "priority": 0.9,
-            "blocked": float("inf"),
+            "blocked": float("inf")
         }
         return costs.get(zone.zone_type, 1.0)
+    
+    def get_connection(self, zone_name_1: str, zone_name_2: str) -> Connection:
+        for conn in self.connections:
+            names = {conn.zone_a.name, conn.zone_b.name}
+            if zone_name_1 in names and zone_name_2 in names:
+                return conn
+        raise ValueError("Connection not found")
         

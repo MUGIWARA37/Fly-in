@@ -2,7 +2,13 @@ from typing import Dict, List, Optional, Tuple
 from src.model.graph import Graph
 
 
-def dijkstra(graph: Graph, start: str, end: str, blocked_edges: Optional[List[Tuple[str, str]]] = None) -> Tuple[List[str], float]:
+def dijkstra(
+    graph: Graph, 
+    start: str, 
+    end: str, 
+    blocked_edges: Optional[List[Tuple[str, str]]] = None,
+    blocked_nodes: Optional[List[str]] = None
+) -> Tuple[List[str], float]:
     dist, prev, visited = {start: 0.0}, {start: None}, set()
     path = []
     if blocked_edges is None:
@@ -10,6 +16,10 @@ def dijkstra(graph: Graph, start: str, end: str, blocked_edges: Optional[List[Tu
     blocked_set = set()
     for a, b in blocked_edges:
         blocked_set.add(frozenset({a, b}))
+        
+    if blocked_nodes is None:
+        blocked_nodes = []
+    blocked_nodes_set = set(blocked_nodes)
     
     while True:
         current = None
@@ -31,10 +41,11 @@ def dijkstra(graph: Graph, start: str, end: str, blocked_edges: Optional[List[Tu
         
         visited.add(current)
         for neighbor in graph.get_neighbors(current):
+            if neighbor.name in blocked_nodes_set:
+                continue
             if frozenset({current, neighbor.name}) in blocked_set or neighbor.zone_type == "blocked":
                 continue
             new_dist = current_dist + graph.get_move_cost(neighbor.name)
             if neighbor.name not in dist or new_dist < dist[neighbor.name]:
                 dist[neighbor.name] = new_dist
                 prev[neighbor.name] = current
-        

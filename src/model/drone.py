@@ -4,6 +4,8 @@ class Drone:
         self.current_zone = current_zone
         self.status = "waiting"
         self.path = []
+        self.path_index = 0
+        self.in_transit = False
 
     def __str__(self) -> str:
         return f"<Drone {self.drone_id} at {self.current_zone} (status: {self.status})>"
