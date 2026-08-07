@@ -1,10 +1,10 @@
 class Zone:
-    def __init__(self,name: str,x: int,y: int,zone_type: str = "normal",
-        color: str = "",
-        max_drones: int = 1,
-        is_start: bool = False,
-        is_end: bool = False
-    ) -> None:
+    def __init__(self, name: str, x: int, y: int, zone_type: str = "normal",
+                 color: str = "",
+                 max_drones: int = 1,
+                 is_start: bool = False,
+                 is_end: bool = False
+                 ) -> None:
         self.name = name
         self.x = x
         self.y = y

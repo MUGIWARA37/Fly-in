@@ -1,15 +1,14 @@
+from src.visualization.graphical import Visualizer
+from src.pathfinding.scheduler import Scheduler
+from src.pathfinding.yen import k_shortest_paths
+from src.model.graph import Graph
+from src.parsing.parser import MapParser
 import sys
 import os
 
 # Add the project root to the python path so imports work correctly
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.parsing.parser import MapParser
-from src.model.graph import Graph
-from src.pathfinding.yen import k_shortest_paths
-from src.pathfinding.scheduler import Scheduler
-
-from src.visualization.graphical import Visualizer
 
 def main():
     if len(sys.argv) != 2:
@@ -17,7 +16,7 @@ def main():
         return
 
     map_path = sys.argv[1]
-    
+
     try:
         # 1. Parse the file
         parser = MapParser(map_path)
@@ -43,15 +42,16 @@ def main():
             if turn.strip():
                 print(turn)
                 valid_turns += 1
-                
+
         print(f"\nTotal turns: {valid_turns}")
-                
+
         # 6. Launch Graphical Visualizer!
         vis = Visualizer(graph, turns)
         vis.start()
-                
+
     except Exception as e:
         print(f"Error: {e}")
+
 
 if __name__ == "__main__":
     main()

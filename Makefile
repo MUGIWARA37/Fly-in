@@ -9,10 +9,10 @@ install:
 	$(PIP) install flake8 mypy
 
 run:
-	$(PYTHON) src/main.py maps/hard/03_ultimate_challenge.txt
+	PYTHONPATH=. $(PYTHON) src/main.py maps/hard/03_ultimate_challenge.txt
 
 debug:
-	$(PYTHON) -m pdb src/main.py maps/hard/03_ultimate_challenge.txt
+	PYTHONPATH=. $(PYTHON) -m pdb src/main.py maps/hard/03_ultimate_challenge.txt
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
