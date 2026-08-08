@@ -1,13 +1,14 @@
-from src.visualization.graphical import Visualizer
-from src.pathfinding.scheduler import Scheduler
-from src.pathfinding.yen import k_shortest_paths
-from src.model.graph import Graph
-from src.parsing.parser import MapParser
 import sys
 import os
 
 # Add the project root to the python path so imports work correctly
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.visualization.graphical import Visualizer
+from src.pathfinding.scheduler import Scheduler
+from src.pathfinding.bfs import find_all_paths_bfs
+from src.model.graph import Graph
+from src.parsing.parser import MapParser
 
 
 def main():
@@ -25,8 +26,9 @@ def main():
         # 2. Build the model
         graph = Graph(parser)
 
-        # 3. Find paths using Yen's K-Shortest Paths (let's find 3 paths)
-        paths = k_shortest_paths(graph, graph.start_hub, graph.end_hub, k=3)
+        # 3. Find ALL paths using BFS, and take the top 3 shortest ones
+        all_paths = find_all_paths_bfs(graph, graph.start_hub, graph.end_hub)
+        paths = all_paths[:3] if len(all_paths) >= 3 else all_paths
 
         if not paths:
             print("Error: No paths found from start to end.")
