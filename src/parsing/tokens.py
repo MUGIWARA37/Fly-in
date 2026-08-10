@@ -3,20 +3,28 @@ from typing import Dict, Tuple
 
 
 def extract_metadata(raw_data: str) -> Tuple[str, Dict[str, str]]:
+    raw_data = raw_data.strip()
     if "[" not in raw_data:
-        return (raw_data.strip(), {})
-    if "]" not in raw_data:
-        raise ValueError()
+        return (raw_data, {})
+    if not raw_data.endswith("]"):
+        raise ValueError("trailing characters after metadata bracket")
+    if raw_data.count("]") != 1:
+        raise ValueError("multiple ']' brackets found")
 
-    content, meta_data = raw_data.split("[")
-    meta_data = meta_data.strip("]")
+    parts = raw_data.split("[")
+    if len(parts) != 2:
+        raise ValueError("multiple '[' brackets found")
+
+    content, meta_data = parts
+    meta_data = meta_data[:-1]
 
     filtered_data = {}
-
-    meta_data = meta_data.split()
-    for data in meta_data:
-        key, value = data.split("=", 1)
-        filtered_data[key.strip()] = value.strip()
+    if meta_data.strip():
+        for data in meta_data.split():
+            if "=" not in data:
+                raise ValueError(f"metadata '{data}' is missing '='")
+            key, value = data.split("=", 1)
+            filtered_data[key.strip()] = value.strip()
 
     return (content.strip(), filtered_data)
 

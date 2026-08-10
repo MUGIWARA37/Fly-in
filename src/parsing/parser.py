@@ -28,12 +28,11 @@ class MapParser:
         with open(self.filepath, "r") as f:
             for line_num, line in enumerate(f, start=1):
                 self.current_line = line_num
-                line = line.strip()
-                if not line or line.startswith("#"):
+                line = line.split("#", 1)[0].strip()
+                if not line:
                     continue
 
                 try:
-
                     if line.startswith("nb_drones:"):
                         self._parse_nb_drones(line)
                     elif line.startswith("start_hub:"):
@@ -47,10 +46,8 @@ class MapParser:
                     else:
                         raise ParseError(
                             self.current_line,
-                            "Syntax error: Unrecognized line format.",
+                            "Syntax error: Unrecognized line format."
                         )
-                except ParseError:
-                    raise
                 except ValueError as e:
                     raise ParseError(self.current_line, str(e))
 
@@ -61,7 +58,7 @@ class MapParser:
         if self.nb_drones is not None:
             raise ParseError(
                 self.current_line,
-                "Syntax error: Duplicate definition of 'nb_drones'.",
+                "Syntax error: Duplicate definition of 'nb_drones'."
             )
         try:
             value = validate_positive_int(line.split()[1].strip())

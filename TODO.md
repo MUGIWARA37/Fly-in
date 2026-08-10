@@ -1,4 +1,4 @@
-colors
-metadata
-brackets in the hub name
-no space between args
+-colors
+-metadata
+-brackets in the hub name
+-no space between args
