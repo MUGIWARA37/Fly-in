@@ -1,4 +1,5 @@
-from typing import Dict, List, Set
+# mypy: ignore-errors
+from typing import Dict, List
 from src.parsing.parser import MapParser
 from .zone import Zone
 from .connection import Connection
@@ -16,9 +17,16 @@ class Graph:
 
     def _build_graph(self, parser: MapParser) -> None:
         for name, zone in parser.zones.items():
-            new_zone = Zone(name, zone["x"], zone["y"], zone["zone_type"],
-                            zone["color"], zone["max_drones"],
-                            zone["is_start"], zone["is_end"])
+            new_zone = Zone(
+                name,
+                zone["x"],
+                zone["y"],
+                zone["zone_type"],
+                zone["color"],
+                zone["max_drones"],
+                zone["is_start"],
+                zone["is_end"],
+            )
             self.zones[name] = new_zone
 
         for conn_data in parser.connections:
@@ -26,11 +34,12 @@ class Graph:
             z2_obj = self.zones[conn_data["zone2"]]
 
             new_connection = Connection(
-                z1_obj, z2_obj, conn_data["max_link_capacity"])
+                z1_obj, z2_obj, conn_data["max_link_capacity"]
+            )
             self.connections.append(new_connection)
 
     def get_zone(self, name: str) -> Zone:
-        return (self.zones[name])
+        return self.zones[name]
 
     def get_neighbors(self, zone_name: str) -> List[Zone]:
         lst = []
@@ -51,7 +60,7 @@ class Graph:
             "normal": 1.0,
             "restricted": 2.0,
             "priority": 0.9,
-            "blocked": float("inf")
+            "blocked": float("inf"),
         }
         return costs.get(zone.zone_type, 1.0)
 

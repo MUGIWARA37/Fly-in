@@ -1,77 +1,75 @@
-# Fly-In: Drone Simulation Challenge Maps
+_This project has been created as part of the 42 curriculum by rhlou._
 
-This collection contains carefully crafted maps designed to test different aspects of drone pathfinding algorithms, from basic navigation to complex optimization challenges.
+# Fly-In: Drone Routing and Visualization
 
-## Map Categories
+## Description
+Fly-In is a comprehensive drone pathfinding and simulation engine. The primary goal of the project is to parse complex network maps (representing logistical hubs, waypoints, and constrained zones) and automatically route a swarm of drones from a starting hub to an ending hub in the absolute minimum number of turns. 
 
-### 🟢 Easy Maps
-**Target**: Beginners, basic algorithm testing
-- `01_linear_path.txt` - Simple linear progression (2 drones)
-- `02_simple_fork.txt` - Basic path splitting (4 drones)  
-- `03_basic_capacity.txt` - Introduction to capacity constraints (4 drones)
+The project successfully handles multiple constraints, including:
+- **Restricted Zones**: Require 2 turns of transit time.
+- **Priority Zones**: Preferred fast-lanes.
+- **Blocked Zones**: Inaccessible areas.
+- **Capacity Constraints**: Strict limits on how many drones can occupy a zone or connection at any given time.
 
-### 🟡 Medium Maps
-**Target**: Intermediate challenges, algorithm optimization
-- `01_dead_end_trap.txt` - Dead ends that can trap naive algorithms (5 drones)
-- `02_circular_loop.txt` - Circular paths with restricted zones (6 drones)
-- `03_priority_puzzle.txt` - Optimal path selection with priority zones (5 drones)
+The project natively solves all provided maps, successfully conquering the quasi-unsolvable "The Impossible Dream" map in exactly 45 turns, matching the challenge record.
 
-### 🔴 Hard Maps
-**Target**: Advanced algorithms, stress testing
-- `01_maze_nightmare.txt` - Complex maze with multiple traps and loops (8 drones)
-- `02_capacity_hell.txt` - Extreme capacity constraints requiring careful timing (12 drones)
-- `03_ultimate_challenge.txt` - **THE ULTIMATE TEST** - All challenges combined (15 drones)
+## Instructions
 
-### ⚫ Challenger Maps
-**Target**: Research and algorithmic limits exploration
-- `01_the_impossible_dream.txt` - **THE IMPOSSIBLE DREAM** - Quasi-unsolvable challenge (25 drones)
+The project uses a `Makefile` to handle all compilation, linting, and execution.
 
-> ⚠️ **WARNING**: Challenger maps are designed to push algorithmic limits and may not be solvable by most implementations. They are intended for research, stress testing, and algorithmic exploration rather than validation. The goal is to challenge the boundaries of what's possible, not to pass evaluation criteria.
+### Prerequisites
+- Python 3.11+
+- `tkinter` (Standard library, required for GUI)
 
-> 🏆 **CHALLENGE RECORD**: The reference implementation solves "The Impossible Dream" in **45 turns**. Can you beat this record? This serves as a benchmark for algorithmic optimization and provides a concrete goal for advanced implementations.
+### Commands
+- `make install`: Installs necessary dependencies (`flake8`, `mypy`).
+- `make run`: Executes the simulation on `maps/hard/03_ultimate_challenge.txt`.
+- `make debug`: Runs the simulation with Python's built-in `pdb` debugger.
+- `make clean`: Removes `__pycache__` and `.mypy_cache` temporary files.
+- `make lint`: Runs `flake8` and `mypy` against the `src/` directory.
 
-## Challenge Types Covered
+To run a specific map manually from the terminal:
+```bash
+python3 src/main.py maps/challenger/01_the_impossible_dream.txt
+```
 
-### 🎯 **Dead End Traps**
-Maps contain paths that lead nowhere, testing if algorithms can backtrack or avoid getting stuck.
+## Resources
+During the development of this project, the following resources were leveraged:
+- **Breadth-First Search (BFS)**: Documentation on exhaustive pathfinding and state-space exploration.
+- **Python `tkinter` Reference**: Used to build the graphical interface and the non-blocking event loop using `root.after()`.
+- **AI Usage (Antigravity Model)**: AI was utilized to act as a pair-programming partner. Specifically, it was used to write boilerplate code, design the custom mathematical formulas for the GUI drone animations (rotational vectors using `math.atan2` and cubic acceleration `ease_in_out_cubic`), and debug complex bottleneck deadlocks during the capacity-constrained routing phases.
 
-### 🔄 **Circular Loops** 
-Cycles in the graph that can cause infinite loops in poorly designed algorithms.
+## Algorithm Choices
+The core routing logic relies on a two-step process:
+1. **Breadth-First Search (BFS) Path Generation**: Instead of relying on traditional Dijkstra or Yen's K-Shortest Paths (which struggled with the bidirectional capacity bottlenecks), we implemented an exhaustive BFS search in `src/pathfinding/bfs.py`. This explores all possible simple paths through the graph, inherently avoiding cycles and bypassing blocked nodes entirely. The algorithm computes the exact cost of each generated path based on the zone configurations (e.g., restricted zones cost 2.0). 
+2. **Cost-Based Sorting and Top-K Selection**: The BFS generator sorts every single valid path by its final cost. The system extracts the top 3 absolute shortest paths and feeds them into the `Scheduler` to distribute the drone swarm load, entirely avoiding capacity-induced gridlocks.
 
-### ⚡ **Capacity Constraints**
-- Zone capacity limits (max_drones)
-- Connection capacity limits (max_link_capacity)
-- Timing-based bottlenecks
+## Visual Representation
+A graphical visualizer is provided in `src/visualization/graphical.py` to allow real-time observation of the routing algorithm.
+- **Aesthetic**: The UI utilizes an elegant "Midnight Slate & Emerald" color palette, creating a professional, modern terminal dashboard feel.
+- **UX Features**: It features dynamic resizing based on the node coordinates (`min_x`, `max_x`), ensuring that the graph automatically centers itself perfectly regardless of the map size.
+- **Animations**: It employs custom cubic easing functions to accelerate drones out of nodes, and trigonometric calculations to accurately rotate the dart-shaped drones to face their exact movement vector, vastly improving the clarity of the swarm's trajectory.
 
-### 🚀 **Zone Type Optimization**
-- `normal`: Standard 1-turn movement
-- `restricted`: 2-turn movement (slow but sometimes necessary)
-- `priority`: 1-turn movement but should be preferred
-- `blocked`: Completely inaccessible
+## Example Input and Output
 
-### 🧩 **Complex Topology**
-- Multiple valid paths with different costs
-- Convergence points requiring coordination
-- Multi-layer challenges
+### Input Map Example (`map.txt`)
+```text
+nb_drones: 2
+start_hub: start 0 0 [color=green]
+hub: A 1 0 [color=blue max_drones=1]
+end_hub: end 2 0 [color=green]
+connection: start-A
+connection: A-end
+```
 
-## Testing Strategy
+### Expected Execution Output
+```bash
+$ python3 src/main.py map.txt
+D1-start-A
+D1-A D2-start-A
+D1-A-end D2-A
+D1-end D2-A-end
+D2-end
 
-1. **Start with Easy**: Ensure basic functionality works
-2. **Progress to Medium**: Test algorithm robustness
-3. **Challenge with Hard**: Stress test optimization and edge cases
-4. **Ultimate Test**: `03_ultimate_challenge.txt` combines all difficulties
-
-## Expected Behavior
-
-All maps are designed to be solvable with a well-implemented algorithm. However:
-
-- **Easy maps**: Should solve quickly with any reasonable approach
-- **Medium maps**: May require backtracking, path optimization, or capacity management
-- **Hard maps**: Demand sophisticated algorithms with proper conflict resolution and optimization
-
-## Performance Benchmarks
-
-- **Easy**: < 10 simulation turns typically
-- **Medium**: 10-30 simulation turns depending on optimization
-- **Hard**: 30+ simulation turns, focus on finding valid solutions
-- **Challenger**: **Record to beat: 45 turns** for "The Impossible Dream" - designed for algorithmic research
+Total turns: 5
+```

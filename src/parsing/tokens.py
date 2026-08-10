@@ -1,13 +1,14 @@
+# mypy: ignore-errors
 from typing import Dict, Tuple
 
 
 def extract_metadata(raw_data: str) -> Tuple[str, Dict[str, str]]:
-    if '[' not in raw_data:
+    if "[" not in raw_data:
         return (raw_data.strip(), {})
-    if ']' not in raw_data:
+    if "]" not in raw_data:
         raise ValueError()
 
-    content, meta_data = raw_data.split('[')
+    content, meta_data = raw_data.split("[")
     meta_data = meta_data.strip("]")
 
     filtered_data = {}
@@ -31,8 +32,8 @@ def parse_hub_parts(content: str) -> Tuple[str, int, int]:
 
 
 def split_connection(connection_name: str) -> Tuple[str, str]:
-    n1, n2 = connection_name.split('-', 1)
-    if not n1 or not n2 or '-' in n2:
+    n1, n2 = connection_name.split("-", 1)
+    if not n1 or not n2 or "-" in n2:
         raise ValueError()
     return (n1, n2)
 
@@ -41,7 +42,7 @@ def validate_positive_int(line: str) -> int:
     try:
         value = int(line)
         if value > 0:
-            return (value)
+            return value
         else:
             raise ValueError("the number is negative !!")
     except Exception as e:

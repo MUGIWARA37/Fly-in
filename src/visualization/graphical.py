@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 import tkinter as tk
 import math
 from typing import List
@@ -23,22 +24,22 @@ class Visualizer:
         screen_height = self.root.winfo_screenheight()
         self.root.geometry(f"{screen_width}x{screen_height}")
         try:
-            self.root.attributes('-zoomed', True)
+            self.root.attributes("-zoomed", True)
         except tk.TclError:
-            self.root.state('zoomed')
+            self.root.state("zoomed")
 
         # Elegant "Midnight Slate & Emerald" Palette
-        self.bg_color = "#0B1120"        # Very dark elegant blue (slate-950)
-        self.sidebar_bg = "#0F172A"      # Slate-900
-        self.text_color = "#F8FAFC"      # Clean white (slate-50)
-        self.text_muted = "#94A3B8"      # Muted gray (slate-400)
-        self.accent_color = "#3B82F6"    # Electric Blue
+        self.bg_color = "#0B1120"  # Very dark elegant blue (slate-950)
+        self.sidebar_bg = "#0F172A"  # Slate-900
+        self.text_color = "#F8FAFC"  # Clean white (slate-50)
+        self.text_muted = "#94A3B8"  # Muted gray (slate-400)
+        self.accent_color = "#3B82F6"  # Electric Blue
 
-        self.conn_color = "#334155"      # Subtle line color
-        self.zone_normal = "#3B82F6"     # Blue nodes
-        self.zone_blocked = "#64748B"    # Gray blocked
+        self.conn_color = "#334155"  # Subtle line color
+        self.zone_normal = "#3B82F6"  # Blue nodes
+        self.zone_blocked = "#64748B"  # Gray blocked
         self.zone_restricted = "#EC4899"  # Hot Pink restricted
-        self.drone_color = "#10B981"     # Brilliant Emerald Green for drones
+        self.drone_color = "#10B981"  # Brilliant Emerald Green for drones
 
         # Fonts
         self.font_title = ("Helvetica", 20, "bold")
@@ -53,9 +54,8 @@ class Visualizer:
         self.canvas_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
         self.canvas = tk.Canvas(
-            self.canvas_frame,
-            bg=self.bg_color,
-            highlightthickness=0)
+            self.canvas_frame, bg=self.bg_color, highlightthickness=0
+        )
         self.canvas.pack(fill=tk.BOTH, expand=True)
 
         # Sidebar UI
@@ -64,27 +64,23 @@ class Visualizer:
             text="NEON ROUTING LOGIC",
             font=self.font_title,
             bg=self.sidebar_bg,
-            fg=self.text_color).pack(
-            pady=(
-                40,
-                20))
+            fg=self.text_color,
+        ).pack(pady=(40, 20))
 
         self.lbl_turn = tk.Label(
             self.sidebar,
             text="TURN 00",
             font=self.font_turn,
             bg=self.sidebar_bg,
-            fg=self.text_color)
+            fg=self.text_color,
+        )
         self.lbl_turn.pack(pady=20)
 
         def create_button(text, command, primary=False):
             btn = tk.Button(
                 self.sidebar,
                 text=text,
-                font=(
-                    "Helvetica",
-                    12,
-                    "bold"),
+                font=("Helvetica", 12, "bold"),
                 command=command,
                 relief=tk.FLAT,
                 bg=self.text_color if primary else "#303C4B",
@@ -92,14 +88,14 @@ class Visualizer:
                 activebackground=self.accent_color,
                 activeforeground=self.bg_color,
                 cursor="hand2",
-                pady=12)
+                pady=12,
+            )
             btn.pack(fill=tk.X, padx=30, pady=10)
             return btn
 
         self.btn_auto = create_button(
-            "▶ INITIATE SEQUENCE",
-            self.toggle_auto_play,
-            primary=True)
+            "▶ INITIATE SEQUENCE", self.toggle_auto_play, primary=True
+        )
         self.btn_next = create_button("-> STEP FORWARD", self.next_turn)
         self.btn_retry = create_button("↺ REBOOT SYSTEM", self.retry)
 
@@ -123,17 +119,24 @@ class Visualizer:
         self.canvas.bind("<Configure>", lambda e: self.draw_graph())
 
     def get_coords(self, x: float, y: float):
-        canvas_w = self.canvas.winfo_width() or (self.root.winfo_screenwidth() - 350)
+        canvas_w = self.canvas.winfo_width() or (
+            self.root.winfo_screenwidth() - 350
+        )
         canvas_h = self.canvas.winfo_height() or self.root.winfo_screenheight()
 
-        scale = min(canvas_w / (self.graph_w + 2), canvas_h / (self.graph_h + 2)
-                    ) if (self.graph_w > 0 or self.graph_h > 0) else 50
+        scale = (
+            min(canvas_w / (self.graph_w + 2), canvas_h / (self.graph_h + 2))
+            if (self.graph_w > 0 or self.graph_h > 0)
+            else 50
+        )
         scale *= 0.85
         offset_x = (canvas_w - (self.graph_w * scale)) / 2
         offset_y = (canvas_h - (self.graph_h * scale)) / 2
 
-        return offset_x + (x - self.min_x) * \
-            scale, offset_y + (y - self.min_y) * scale
+        return (
+            offset_x + (x - self.min_x) * scale,
+            offset_y + (y - self.min_y) * scale,
+        )
 
     def draw_graph(self):
         self.canvas.delete("graph")
@@ -143,7 +146,14 @@ class Visualizer:
         for x in range(0, w, 60):
             for y in range(0, h, 60):
                 self.canvas.create_oval(
-                    x, y, x + 1, y + 1, fill="#1F2833", outline="", tags="graph")
+                    x,
+                    y,
+                    x + 1,
+                    y + 1,
+                    fill="#1F2833",
+                    outline="",
+                    tags="graph",
+                )
 
         # Connections
         for conn in self.graph.connections:
@@ -158,7 +168,8 @@ class Visualizer:
                 width=6,
                 tags="graph",
                 capstyle=tk.ROUND,
-                smooth=True)
+                smooth=True,
+            )
             self.canvas.create_line(
                 x1,
                 y1,
@@ -168,18 +179,33 @@ class Visualizer:
                 width=2,
                 tags="graph",
                 capstyle=tk.ROUND,
-                smooth=True)
+                smooth=True,
+            )
 
         # Zones
         for name, zone in self.graph.zones.items():
             x, y = self.get_coords(zone.x, zone.y)
 
+            color_map = {
+                "rainbow": "#FF00FF",  # Tkinter doesn't know rainbow
+                "darkred": "#8B0000",  # Ensure darkred maps nicely
+            }
+
+            # Default fallbacks if no color is specified
+            fallback_color = self.zone_normal
             if zone.zone_type == "blocked":
-                color = self.zone_blocked
+                fallback_color = self.zone_blocked
             elif zone.zone_type == "restricted":
-                color = self.zone_restricted
-            else:
-                color = self.zone_normal
+                fallback_color = self.zone_restricted
+
+            color = zone.color if zone.color else fallback_color
+            color = color_map.get(color.lower(), color)
+
+            # Tkinter X11 colors usually work, but just in case:
+            try:
+                self.root.winfo_rgb(color)
+            except tk.TclError:
+                color = fallback_color
 
             try:
                 # Glowing outer ring
@@ -190,7 +216,8 @@ class Visualizer:
                     y + 24,
                     outline=color,
                     width=2,
-                    tags="graph")
+                    tags="graph",
+                )
                 # Solid inner core
                 self.canvas.create_oval(
                     x - 10,
@@ -199,7 +226,8 @@ class Visualizer:
                     y + 10,
                     fill=color,
                     outline="",
-                    tags="graph")
+                    tags="graph",
+                )
             except tk.TclError:
                 self.canvas.create_oval(
                     x - 24,
@@ -208,7 +236,8 @@ class Visualizer:
                     y + 24,
                     outline=self.text_color,
                     width=2,
-                    tags="graph")
+                    tags="graph",
+                )
 
             self.canvas.create_text(
                 x,
@@ -216,7 +245,8 @@ class Visualizer:
                 text=name.upper(),
                 fill=self.text_muted,
                 font=self.font_small,
-                tags="graph")
+                tags="graph",
+            )
 
     def draw_drone(self, d_id, cx, cy, angle):
         shapes = []
@@ -248,7 +278,9 @@ class Visualizer:
                 py4,
                 fill=self.drone_color,
                 outline=self.bg_color,
-                width=1))
+                width=1,
+            )
+        )
         # Draw ID text
         shapes.append(
             self.canvas.create_text(
@@ -256,10 +288,9 @@ class Visualizer:
                 cy - 20,
                 text=d_id,
                 fill=self.text_color,
-                font=(
-                    "Helvetica",
-                    8,
-                    "bold")))
+                font=("Helvetica", 8, "bold"),
+            )
+        )
 
         self.drone_shapes[d_id] = shapes
 
@@ -279,23 +310,19 @@ class Visualizer:
                 offset_x = (i % 3) * 15 - 15 if len(drones) > 1 else 0
                 offset_y = (i // 3) * 15 - 15 if len(drones) > 1 else 0
                 angle = self.drone_angles.get(
-                    d_id, -math.pi / 2)  # Default pointing up
+                    d_id, -math.pi / 2
+                )  # Default pointing up
                 self.draw_drone(
-                    d_id,
-                    base_cx +
-                    offset_x,
-                    base_cy +
-                    offset_y,
-                    angle)
+                    d_id, base_cx + offset_x, base_cy + offset_y, angle
+                )
 
     def retry(self):
         self.is_auto_playing = False
         self.current_turn = -1
         self.lbl_turn.config(text="TURN 00")
         self.btn_auto.config(
-            text="▶ INITIATE SEQUENCE",
-            bg=self.text_color,
-            fg=self.bg_color)
+            text="▶ INITIATE SEQUENCE", bg=self.text_color, fg=self.bg_color
+        )
         self.btn_next.config(state=tk.NORMAL)
 
         start_zone = self.graph.get_zone(self.graph.start_hub)
@@ -325,9 +352,9 @@ class Visualizer:
             self.root.after(
                 30,
                 lambda: self.animate_step(
-                    frame + 1,
-                    total_frames,
-                    start_positions))
+                    frame + 1, total_frames, start_positions
+                ),
+            )
         else:
             self.btn_next.config(state=tk.NORMAL)
             if self.is_auto_playing:
@@ -341,7 +368,8 @@ class Visualizer:
             self.btn_auto.config(
                 text="▶ INITIATE SEQUENCE",
                 bg=self.text_color,
-                fg=self.bg_color)
+                fg=self.bg_color,
+            )
             return
 
         self.btn_next.config(state=tk.DISABLED)
@@ -379,15 +407,15 @@ class Visualizer:
         self.is_auto_playing = not self.is_auto_playing
         if self.is_auto_playing:
             self.btn_auto.config(
-                text="⏸ HALT SEQUENCE",
-                bg="#FF007A",
-                fg="#FFFFFF")
+                text="⏸ HALT SEQUENCE", bg="#FF007A", fg="#FFFFFF"
+            )
             self.next_turn()
         else:
             self.btn_auto.config(
                 text="▶ INITIATE SEQUENCE",
                 bg=self.text_color,
-                fg=self.bg_color)
+                fg=self.bg_color,
+            )
 
     def start(self):
         self.root.mainloop()

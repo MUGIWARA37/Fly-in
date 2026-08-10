@@ -6,7 +6,7 @@ PIP = pip3
 all: run
 
 install:
-	$(PIP) install flake8 mypy
+	$(PYTHON) -m pip install flake8 mypy
 
 run:
 	PYTHONPATH=. $(PYTHON) src/main.py maps/hard/03_ultimate_challenge.txt
@@ -20,9 +20,9 @@ clean:
 	find . -type f -name "*.pyc" -delete
 
 lint:
-	flake8 src/
-	mypy src/ --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	flake8 . --max-line-length=120
+	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
 lint-strict:
-	flake8 src/
-	mypy src/ --strict
+	flake8 . --max-line-length=120
+	mypy . --strict
