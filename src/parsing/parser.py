@@ -3,7 +3,6 @@ from typing import Dict, List
 from .tokens import (
     validate_positive_int,
     extract_metadata,
-    parse_hub_parts,
     split_connection,
 )
 from .exceptions import ParseError
@@ -76,8 +75,19 @@ class MapParser:
             raise ValueError("Syntax error: Unrecognized hub prefix.")
 
         line = line.split(":", 1)[1].strip()
-        name_n_coords, metadata = extract_metadata(line)
-        name, x, y = parse_hub_parts(name_n_coords)
+        parts = line.split(maxsplit=3)
+        if len(parts) < 3:
+            raise ValueError("Syntax error: Missing name or coordinates")
+
+        name = parts[0]
+        try:
+            x, y = int(parts[1]), int(parts[2])
+        except ValueError:
+            raise ValueError("Syntax error: Invalid integer for coordinates")
+
+        metadata = {}
+        if len(parts) == 4:
+            _, metadata = extract_metadata(parts[3])
         if name in self.zones:
             raise ValueError(
                 f"Semantic error: Duplicate zone definition for '{name}'."
@@ -121,7 +131,15 @@ class MapParser:
             raise ValueError("Drones number must be declared before zones")
 
         raw_cammand = line.split(":", 1)[1].strip()
-        link, cost = extract_metadata(raw_cammand)
+        parts = raw_cammand.split(maxsplit=1)
+        if len(parts) < 1:
+            raise ValueError("Syntax error: Missing connection data")
+
+        link = parts[0]
+        cost = {}
+        if len(parts) == 2:
+            _, cost = extract_metadata(parts[1])
+
         z1, z2 = split_connection(link)
         if z1 not in self.zones:
             raise ValueError(
