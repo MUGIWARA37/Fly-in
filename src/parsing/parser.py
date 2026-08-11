@@ -92,10 +92,21 @@ class MapParser:
             raise ValueError(
                 f"Semantic error: Duplicate zone definition for '{name}'."
             )
+
+        for z_name, z_data in self.zones.items():
+            if z_data["x"] == x and z_data["y"] == y:
+                raise ValueError(
+                    f"Semantic error: Coordinates ({x}, {y}) for zone '{name}' are already used by zone '{z_name}'."
+                )
         zone_type = metadata.get("zone", "normal")
         if zone_type not in ("normal", "blocked", "restricted", "priority"):
             raise ValueError(
                 f"Semantic error: Invalid zone type '{zone_type}'. Expected: normal, blocked, restricted, priority."
+            )
+
+        if hub_type in ("start", "end") and zone_type == "blocked":
+            raise ValueError(
+                f"Semantic error: The {hub_type}_hub cannot be a blocked zone."
             )
         max_drones: int = validate_positive_int(
             metadata.get("max_drones", "1")

@@ -1,5 +1,0 @@
--colors
--metadata
--brackets in the hub name
--no space between args
--spit using the spaces and force 4 splits and verifie lst element with brackets
