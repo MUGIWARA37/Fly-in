@@ -24,7 +24,19 @@ def extract_metadata(raw_data: str) -> Tuple[str, Dict[str, str]]:
             if "=" not in data:
                 raise ValueError(f"metadata '{data}' is missing '='")
             key, value = data.split("=", 1)
-            filtered_data[key.strip()] = value.strip()
+            key = key.strip()
+            value = value.strip()
+
+            if key in ("color", "zone"):
+                if not value.isalpha():
+                    raise ValueError(
+                        f"metadata '{key}' must contain only letters")
+            elif key in ("max_drones", "max_link_capacity"):
+                if not value.isdigit():
+                    raise ValueError(
+                        f"metadata '{key}' must contain only numbers")
+
+            filtered_data[key] = value
 
     return (content.strip(), filtered_data)
 
