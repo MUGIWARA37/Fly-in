@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 from typing import Dict, List
 from parser import MapParser
 from zone import Zone

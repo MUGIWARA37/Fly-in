@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 from typing import Dict, List
 from tokens import (
     validate_positive_int,
@@ -85,7 +84,7 @@ class MapParser:
         except ValueError:
             raise ValueError("Syntax error: Invalid integer for coordinates")
 
-        metadata = {}
+        metadata: Dict[str, str] = {}
         if len(parts) == 4:
             meta_str = parts[3].strip()
             if not meta_str.startswith("[") or not meta_str.endswith("]"):
@@ -134,6 +133,16 @@ class MapParser:
                 "crimson": "#DC143C",
                 "rainbow": "magenta",
                 "purple": "magenta",
+                "lime": "#00FF00",
+                "gray": "#808080",
+                "grey": "#808080",
+                "silver": "#C0C0C0",
+                "olive": "#808000",
+                "teal": "#008080",
+                "navy": "#000080",
+                "coral": "#FF7F50",
+                "pink": "#FFC0CB",
+                "indigo": "#4B0082",
             }
             color = legacy_map.get(color, color)
 
@@ -179,7 +188,7 @@ class MapParser:
             raise ValueError("Syntax error: Missing connection data")
 
         link = parts[0]
-        cost = {}
+        cost: Dict[str, str] = {}
         if len(parts) == 2:
             meta_str = parts[1].strip()
             if not meta_str.startswith("[") or not meta_str.endswith("]"):

@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 from typing import Dict, Tuple
 
 
@@ -44,9 +43,8 @@ def extract_metadata(raw_data: str) -> Tuple[str, Dict[str, str]]:
 def parse_hub_parts(content: str) -> Tuple[str, int, int]:
 
     try:
-        name, X, Y = content.split()
-        X, Y = int(X), int(Y)
-        return (name, X, Y)
+        name, x_str, y_str = content.split()
+        return (name, int(x_str), int(y_str))
     except ValueError:
         raise ValueError()
 

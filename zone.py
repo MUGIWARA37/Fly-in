@@ -32,4 +32,3 @@ class Zone:
         reset = "\033[0m"
         color_code = color_map.get(self.color.lower(), "")
         return f"{color_code}<Zone '{self.name}' ({self.x}, {self.y}) type={self.zone_type}>{reset}"
-

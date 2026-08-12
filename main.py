@@ -1,10 +1,5 @@
-# mypy: ignore-errors
 from rich.console import Console
 import sys
-import os
-
-# Add the project root to the python path so imports work correctly
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 from scheduler import Scheduler  # noqa: E402
@@ -36,14 +31,18 @@ def main() -> None:
             return
 
         turns = None
-        # Start at k=4 (optimal for 44-turn Impossible Dream) and fallback to
-        # avoid deadlocks
-        for k_val in range(4, 0, -1):
-            paths = all_paths[:k_val] if len(all_paths) >= k_val else all_paths
+        best_turns = None
+        # Try all k values and keep the best (fewest turns)
+        max_k = min(10, len(all_paths))
+        for k_val in range(1, max_k + 1):
+            paths = all_paths[:k_val]
             scheduler = Scheduler(graph, paths)
             try:
-                turns = scheduler.simulate()
-                break
+                result = scheduler.simulate()
+                valid = len([t for t in result if t.strip()])
+                if best_turns is None or valid < best_turns:
+                    best_turns = valid
+                    turns = result
             except Exception as e:
                 if str(e) == "DEADLOCK DETECTED":
                     continue
