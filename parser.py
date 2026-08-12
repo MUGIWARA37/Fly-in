@@ -131,18 +131,9 @@ class MapParser:
                 "darkred": "#8B0000",
                 "violet": "#EE82EE",
                 "crimson": "#DC143C",
-                "rainbow": "magenta",
-                "purple": "magenta",
+                "purple": "#7603B0",
                 "lime": "#00FF00",
-                "gray": "#808080",
-                "grey": "#808080",
-                "silver": "#C0C0C0",
-                "olive": "#808000",
-                "teal": "#008080",
-                "navy": "#000080",
-                "coral": "#FF7F50",
-                "pink": "#FFC0CB",
-                "indigo": "#4B0082",
+                "rainbow": "magenta",
             }
             color = legacy_map.get(color, color)
 
