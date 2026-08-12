@@ -6,14 +6,13 @@ PIP = uv pip
 all: run
 
 install:
-	uv venv --allow-existing
 	$(PIP) install flake8 mypy rich
 
 run:
-	PYTHONPATH=. $(PYTHON) main.py maps/challenger/01_the_impossible_dream.txt
+	$(PYTHON) main.py maps/challenger/01_the_impossible_dream.txt
 
 debug:
-	PYTHONPATH=. $(PYTHON) -m pdb main.py maps/hard/03_ultimate_challenge.txt
+	$(PYTHON) -m pdb main.py maps/hard/03_ultimate_challenge.txt
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
