@@ -11,5 +11,3 @@ class Connection:
 
     def __str__(self) -> str:
         return f"<Connection {self.zone_a.name} <-> {self.zone_b.name} (cap: {self.max_link_capacity})>"
-
-    __repr__ = __str__
