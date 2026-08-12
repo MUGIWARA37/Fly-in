@@ -1,15 +1,16 @@
 # mypy: ignore-errors
+from rich.console import Console
 import sys
 import os
 
 # Add the project root to the python path so imports work correctly
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.visualization.graphical import Visualizer  # noqa: E402
-from src.pathfinding.scheduler import Scheduler  # noqa: E402
-from src.pathfinding.dfs import dfs  # noqa: E402
-from src.model.graph import Graph  # noqa: E402
-from src.parsing.parser import MapParser  # noqa: E402
+
+from scheduler import Scheduler  # noqa: E402
+from dfs import dfs  # noqa: E402
+from graph import Graph  # noqa: E402
+from parser import MapParser  # noqa: E402
 
 
 def main() -> None:
@@ -55,26 +56,7 @@ def main() -> None:
 
         # 5. Output the turn-by-turn simulation (Mandatory for grading)
         valid_turns = 0
-        # Color map for terminal output
-        color_map = {
-            "red": "\033[91m",
-            "green": "\033[92m",
-            "yellow": "\033[93m",
-            "blue": "\033[94m",
-            "purple": "\033[95m",
-            "cyan": "\033[96m",
-            "white": "\033[97m",
-            "black": "\033[90m",
-            "brown": "\033[33m",
-            "orange": "\033[38;5;208m",
-            "maroon": "\033[31m",
-            "gold": "\033[38;5;220m",
-            "darkred": "\033[38;5;88m",
-            "violet": "\033[38;5;177m",
-            "crimson": "\033[38;5;161m",
-            "rainbow": "\033[38;5;196m",  # simplified rainbow
-        }
-        reset = "\033[0m"
+        console = Console()
 
         for turn in turns:
             if turn.strip():
@@ -82,17 +64,18 @@ def main() -> None:
                 for movement in turn.split(" "):
                     parts = movement.split("-")
                     target_zone = parts[-1]
-                    color = graph.get_zone(target_zone).color
-                    color_code = color_map.get(color.lower(), "")
-                    colored_movements.append(f"{color_code}{movement}{reset}")
-                print(" ".join(colored_movements))
+                    color = graph.get_zone(target_zone).color.lower()
+
+                    if not color:
+                        colored_movements.append(movement)
+                    else:
+                        colored_movements.append(
+                            f"[{color}]{movement}[/{color}]")
+
+                console.print(" ".join(colored_movements))
                 valid_turns += 1
 
         print(f"\nTotal turns: {valid_turns}")
-
-        # 6. Launch Graphical Visualizer!
-        vis = Visualizer(graph, turns)
-        vis.start()
 
     except Exception as e:
         print(f"Error: {e}")

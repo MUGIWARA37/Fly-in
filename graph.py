@@ -1,8 +1,8 @@
 # mypy: ignore-errors
 from typing import Dict, List
-from src.parsing.parser import MapParser
-from .zone import Zone
-from .connection import Connection
+from parser import MapParser
+from zone import Zone
+from connection import Connection
 
 
 class Graph:

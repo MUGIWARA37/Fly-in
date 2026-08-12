@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from src.model.graph import Graph
+from graph import Graph
 
 
 def dfs(graph: Graph, start: str, end: str) -> List[Tuple[List[str], float]]:

@@ -1,11 +1,11 @@
 # mypy: ignore-errors
 from typing import Dict, List
-from .tokens import (
+from tokens import (
     validate_positive_int,
     extract_metadata,
     split_connection,
 )
-from .exceptions import ParseError
+from exceptions import ParseError
 
 
 class MapParser:
@@ -87,7 +87,11 @@ class MapParser:
 
         metadata = {}
         if len(parts) == 4:
-            _, metadata = extract_metadata(parts[3])
+            meta_str = parts[3].strip()
+            if not meta_str.startswith("[") or not meta_str.endswith("]"):
+                raise ValueError(
+                    f"Syntax error: Invalid metadata format or trailing characters. Expected '[...]', got '{meta_str}'")
+            _, metadata = extract_metadata(meta_str)
         if name in self.zones:
             raise ValueError(
                 f"Semantic error: Duplicate zone definition for '{name}'."
@@ -113,11 +117,39 @@ class MapParser:
         )
         if hub_type in ("start", "end"):
             max_drones = 999999999
+        color = metadata.get("color", "").lower()
+        if color:
+            from rich.style import Style
+            from rich.errors import StyleSyntaxError
+
+            # Map custom legacy colors from the old ANSI map to exact hex codes
+            # for rich
+            legacy_map = {
+                "brown": "#8B4513",
+                "orange": "#FFA500",
+                "maroon": "#800000",
+                "gold": "#FFD700",
+                "darkred": "#8B0000",
+                "violet": "#EE82EE",
+                "crimson": "#DC143C",
+                "rainbow": "magenta",
+                "purple": "magenta",
+            }
+            color = legacy_map.get(color, color)
+
+            try:
+                Style.parse(color)
+            except StyleSyntaxError:
+                original = metadata.get("color", "")
+                raise ValueError(
+                    f"Semantic error: Unsupported rich color '{original}' for zone '{name}'"
+                )
+
         self.zones[name] = {
             "x": x,
             "y": y,
             "zone_type": zone_type,
-            "color": metadata.get("color", ""),
+            "color": color,
             "max_drones": max_drones,
             "is_start": hub_type == "start",
             "is_end": hub_type == "end",
@@ -149,8 +181,11 @@ class MapParser:
         link = parts[0]
         cost = {}
         if len(parts) == 2:
-            _, cost = extract_metadata(parts[1])
-
+            meta_str = parts[1].strip()
+            if not meta_str.startswith("[") or not meta_str.endswith("]"):
+                raise ValueError(
+                    f"Syntax error: Invalid metadata format or trailing characters. Expected '[...]', got '{meta_str}'")
+            _, cost = extract_metadata(meta_str)
         z1, z2 = split_connection(link)
         if z1 not in self.zones:
             raise ValueError(

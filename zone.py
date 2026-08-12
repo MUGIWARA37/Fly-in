@@ -33,4 +33,3 @@ class Zone:
         color_code = color_map.get(self.color.lower(), "")
         return f"{color_code}<Zone '{self.name}' ({self.x}, {self.y}) type={self.zone_type}>{reset}"
 
-    __repr__ = __str__

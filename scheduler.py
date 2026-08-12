@@ -1,6 +1,6 @@
 from typing import List, Tuple
-from src.model.graph import Graph
-from src.model.drone import Drone
+from graph import Graph
+from drone import Drone
 
 
 class Scheduler:

@@ -1,18 +1,19 @@
-PYTHON = python3
-PIP = pip3
+PYTHON = uv run python3
+PIP = uv pip
 
 .PHONY: all install run debug clean lint lint-strict
 
 all: run
 
 install:
-	$(PYTHON) -m pip install flake8 mypy
+	uv venv --allow-existing
+	$(PIP) install flake8 mypy rich
 
 run:
-	PYTHONPATH=. $(PYTHON) src/main.py maps/hard/03_ultimate_challenge.txt
+	PYTHONPATH=. $(PYTHON) main.py maps/challenger/01_the_impossible_dream.txt
 
 debug:
-	PYTHONPATH=. $(PYTHON) -m pdb src/main.py maps/hard/03_ultimate_challenge.txt
+	PYTHONPATH=. $(PYTHON) -m pdb main.py maps/hard/03_ultimate_challenge.txt
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
@@ -20,9 +21,9 @@ clean:
 	find . -type f -name "*.pyc" -delete
 
 lint:
-	flake8 . --max-line-length=120
-	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	uv run flake8 *.py --max-line-length=120
+	uv run mypy *.py --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
 lint-strict:
-	flake8 . --max-line-length=120
-	mypy . --strict
+	uv run flake8 *.py --max-line-length=120
+	uv run mypy *.py --strict
