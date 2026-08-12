@@ -133,17 +133,17 @@ class MapParser:
                 "crimson": "#DC143C",
                 "purple": "#7603B0",
                 "lime": "#00FF00",
-                "rainbow": "magenta",
             }
             color = legacy_map.get(color, color)
 
-            try:
-                Style.parse(color)
-            except StyleSyntaxError:
-                original = metadata.get("color", "")
-                raise ValueError(
-                    f"Semantic error: Unsupported rich color '{original}' for zone '{name}'"
-                )
+            if color != "rainbow":
+                try:
+                    Style.parse(color)
+                except StyleSyntaxError:
+                    original = metadata.get("color", "")
+                    raise ValueError(
+                        f"Semantic error: Unsupported rich color '{original}' for zone '{name}'"
+                    )
 
         self.zones[name] = {
             "x": x,

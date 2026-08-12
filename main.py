@@ -67,6 +67,15 @@ def main() -> None:
 
                     if not color:
                         colored_movements.append(movement)
+                    elif color == "rainbow":
+                        colors = ["red", "yellow", "green", "cyan", "blue", "magenta"]
+                        rainbow_text = ""
+                        i = 0
+                        while i < len(movement):
+                            c = colors[i % len(colors)]
+                            rainbow_text += f"[{c}]{movement[i]}[/{c}]"
+                            i += 1
+                        colored_movements.append(rainbow_text)
                     else:
                         colored_movements.append(
                             f"[{color}]{movement}[/{color}]")
