@@ -2,3 +2,12 @@
 name = "fly-in"
 version = "1.0.0"
 requires-python = ">=3.10"
+dependencies = [
+    "rich",
+]
+
+[dependency-groups]
+dev = [
+    "flake8",
+    "mypy",
+]

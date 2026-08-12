@@ -10,4 +10,7 @@ class Connection:
         self.max_link_capacity = max_link_capacity
 
     def __str__(self) -> str:
-        return f"<Connection {self.zone_a.name} <-> {self.zone_b.name} (cap: {self.max_link_capacity})>"
+        return (
+            f"<Connection {self.zone_a.name} <-> {self.zone_b.name} "
+            f"(cap: {self.max_link_capacity})>"
+        )

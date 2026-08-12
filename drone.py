@@ -11,4 +11,7 @@ class Drone:
         self.in_transit = False
 
     def __str__(self) -> str:
-        return f"<Drone {self.drone_id} at {self.current_zone} (status: {self.status})>"
+        return (
+            f"<Drone {self.drone_id} at {self.current_zone} "
+            f"(status: {self.status})>"
+        )

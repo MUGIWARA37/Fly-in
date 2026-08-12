@@ -44,7 +44,7 @@ class MapParser:
                     else:
                         raise ParseError(
                             self.current_line,
-                            "Syntax error: Unrecognized line format."
+                            "Syntax error: Unrecognized line format.",
                         )
                 except ValueError as e:
                     raise ParseError(self.current_line, str(e))
@@ -56,7 +56,7 @@ class MapParser:
         if self.nb_drones is not None:
             raise ParseError(
                 self.current_line,
-                "Syntax error: Duplicate definition of 'nb_drones'."
+                "Syntax error: Duplicate definition of 'nb_drones'.",
             )
         try:
             value = validate_positive_int(line.split()[1].strip())
@@ -89,7 +89,9 @@ class MapParser:
             meta_str = parts[3].strip()
             if not meta_str.startswith("[") or not meta_str.endswith("]"):
                 raise ValueError(
-                    f"Syntax error: Invalid metadata format or trailing characters. Expected '[...]', got '{meta_str}'")
+                    "Syntax error: Invalid metadata format or trailing "
+                    f"characters. Expected '[...]', got '{meta_str}'"
+                )
             _, metadata = extract_metadata(meta_str)
         if name in self.zones:
             raise ValueError(
@@ -99,12 +101,14 @@ class MapParser:
         for z_name, z_data in self.zones.items():
             if z_data["x"] == x and z_data["y"] == y:
                 raise ValueError(
-                    f"Semantic error: Coordinates ({x}, {y}) for zone '{name}' are already used by zone '{z_name}'."
+                    f"Semantic error: Coordinates ({x}, {y}) for zone "
+                    f"'{name}' are already used by zone '{z_name}'."
                 )
         zone_type = metadata.get("zone", "normal")
         if zone_type not in ("normal", "blocked", "restricted", "priority"):
             raise ValueError(
-                f"Semantic error: Invalid zone type '{zone_type}'. Expected: normal, blocked, restricted, priority."
+                f"Semantic error: Invalid zone type '{zone_type}'. "
+                "Expected: normal, blocked, restricted, priority."
             )
 
         if hub_type in ("start", "end") and zone_type == "blocked":
@@ -142,7 +146,8 @@ class MapParser:
                 except StyleSyntaxError:
                     original = metadata.get("color", "")
                     raise ValueError(
-                        f"Semantic error: Unsupported rich color '{original}' for zone '{name}'"
+                        "Semantic error: Unsupported rich color "
+                        f"'{original}' for zone '{name}'"
                     )
 
         self.zones[name] = {
@@ -157,14 +162,16 @@ class MapParser:
         if hub_type == "start":
             if self.start_hub_count >= 1:
                 raise ValueError(
-                    "Semantic error: Multiple 'start_hub' zones defined. Only one is permitted."
+                    "Semantic error: Multiple 'start_hub' zones defined. "
+                    "Only one is permitted."
                 )
             self.start_hub_name = name
             self.start_hub_count += 1
         elif hub_type == "end":
             if self.end_hub_count >= 1:
                 raise ValueError(
-                    "Semantic error: Multiple 'end_hub' zones defined. Only one is permitted."
+                    "Semantic error: Multiple 'end_hub' zones defined. "
+                    "Only one is permitted."
                 )
             self.end_hub_name = name
             self.end_hub_count += 1
@@ -184,7 +191,9 @@ class MapParser:
             meta_str = parts[1].strip()
             if not meta_str.startswith("[") or not meta_str.endswith("]"):
                 raise ValueError(
-                    f"Syntax error: Invalid metadata format or trailing characters. Expected '[...]', got '{meta_str}'")
+                    "Syntax error: Invalid metadata format or trailing "
+                    f"characters. Expected '[...]', got '{meta_str}'"
+                )
             _, cost = extract_metadata(meta_str)
         z1, z2 = split_connection(link)
         if z1 not in self.zones:
@@ -197,11 +206,13 @@ class MapParser:
             )
         if z1 == z2:
             raise ValueError(
-                f"Semantic error: Self-referencing connections are not permitted (zone '{z1}')."
+                "Semantic error: Self-referencing connections are not "
+                f"permitted (zone '{z1}')."
             )
         if frozenset({z1, z2}) in self.seen_connections:
             raise ValueError(
-                f"Semantic error: Duplicate connection defined between '{z1}' and '{z2}'."
+                "Semantic error: Duplicate connection defined between "
+                f"'{z1}' and '{z2}'."
             )
         max_link_capacity = validate_positive_int(
             cost.get("max_link_capacity", "1")
@@ -219,10 +230,12 @@ class MapParser:
         if self.start_hub_count != 1:
             raise ParseError(
                 0,
-                f"Validation error: Map must contain exactly one 'start_hub' (found {self.start_hub_count}).",
+                f"Validation error: Map must contain exactly one "
+                f"'start_hub' (found {self.start_hub_count}).",
             )
         if self.end_hub_count != 1:
             raise ParseError(
                 0,
-                f"Validation error: Map must contain exactly one 'end_hub' (found {self.end_hub_count}).",
+                f"Validation error: Map must contain exactly one "
+                f"'end_hub' (found {self.end_hub_count}).",
             )

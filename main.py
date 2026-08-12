@@ -68,7 +68,14 @@ def main() -> None:
                     if not color:
                         colored_movements.append(movement)
                     elif color == "rainbow":
-                        colors = ["red", "yellow", "green", "cyan", "blue", "magenta"]
+                        colors = [
+                            "red",
+                            "yellow",
+                            "green",
+                            "cyan",
+                            "blue",
+                            "magenta",
+                        ]
                         rainbow_text = ""
                         i = 0
                         while i < len(movement):
@@ -78,7 +85,8 @@ def main() -> None:
                         colored_movements.append(rainbow_text)
                     else:
                         colored_movements.append(
-                            f"[{color}]{movement}[/{color}]")
+                            f"[{color}]{movement}[/{color}]"
+                        )
 
                 console.print(" ".join(colored_movements))
                 valid_turns += 1

@@ -29,11 +29,13 @@ def extract_metadata(raw_data: str) -> Tuple[str, Dict[str, str]]:
             if key in ("color", "zone"):
                 if not value.isalpha():
                     raise ValueError(
-                        f"metadata '{key}' must contain only letters")
+                        f"metadata '{key}' must contain only letters"
+                    )
             elif key in ("max_drones", "max_link_capacity"):
                 if not value.isdigit():
                     raise ValueError(
-                        f"metadata '{key}' must contain only numbers")
+                        f"metadata '{key}' must contain only numbers"
+                    )
 
             filtered_data[key] = value
 
