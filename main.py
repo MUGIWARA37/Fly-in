@@ -1,11 +1,9 @@
+from scheduler import Scheduler
+from dfs import dfs
+from graph import Graph
+from parser import MapParser
 from rich.console import Console
 import sys
-
-
-from scheduler import Scheduler  # noqa: E402
-from dfs import dfs  # noqa: E402
-from graph import Graph  # noqa: E402
-from parser import MapParser  # noqa: E402
 
 
 def main() -> None:
