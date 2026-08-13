@@ -58,7 +58,7 @@ class Graph:
         costs: Dict[str, float] = {
             "normal": 1.0,
             "restricted": 2.0,
-            "priority": 0.9,
+            "priority": 1.0,
             "blocked": float("inf"),
         }
         return costs.get(zone.zone_type, 1.0)
