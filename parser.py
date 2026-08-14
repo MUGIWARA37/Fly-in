@@ -98,16 +98,6 @@ class MapParser:
                 f"Semantic error: Duplicate zone definition for '{name}'."
             )
 
-        if (
-            hub_type in ("start", "end")
-            and "max_drones" in metadata
-            and int(metadata["max_drones"]) < self.nb_drones
-        ):
-            raise ValueError(
-                f"{hub_type} hub max capacity must be the "
-                "number of drones or more"
-            )
-
         for z_name, z_data in self.zones.items():
             if z_data["x"] == x and z_data["y"] == y:
                 raise ValueError(
@@ -129,7 +119,7 @@ class MapParser:
             metadata.get("max_drones", "1")
         )
         if hub_type in ("start", "end"):
-            max_drones = 999999
+            max_drones = float('inf')
         color = metadata.get("color", "").lower()
         if color:
             from rich.style import Style
