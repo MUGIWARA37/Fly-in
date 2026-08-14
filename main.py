@@ -8,7 +8,7 @@ import sys
 
 def main() -> None:
     if len(sys.argv) != 2:
-        print("Usage: python src/main.py <map_file>")
+        print("Usage: python main.py <map_file>")
         return
 
     map_path = sys.argv[1]
