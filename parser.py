@@ -59,7 +59,7 @@ class MapParser:
                 "Syntax error: Duplicate definition of 'nb_drones'.",
             )
         try:
-            value = validate_positive_int(line.split()[1].strip())
+            value = validate_positive_int(line.split(":")[1].strip())
             self.nb_drones = value
 
         except ValueError as e:
@@ -98,6 +98,16 @@ class MapParser:
                 f"Semantic error: Duplicate zone definition for '{name}'."
             )
 
+        if (
+            hub_type in ("start", "end")
+            and "max_drones" in metadata
+            and int(metadata["max_drones"]) < self.nb_drones
+        ):
+            raise ValueError(
+                f"{hub_type} hub max capacity must be the "
+                "number of drones or more"
+            )
+
         for z_name, z_data in self.zones.items():
             if z_data["x"] == x and z_data["y"] == y:
                 raise ValueError(
@@ -115,11 +125,11 @@ class MapParser:
             raise ValueError(
                 f"Semantic error: The {hub_type}_hub cannot be a blocked zone."
             )
-        max_drones: int = validate_positive_int(
+        max_drones = validate_positive_int(
             metadata.get("max_drones", "1")
         )
         if hub_type in ("start", "end"):
-            max_drones = 999999999
+            max_drones = 999999
         color = metadata.get("color", "").lower()
         if color:
             from rich.style import Style
