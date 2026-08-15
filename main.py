@@ -58,36 +58,34 @@ def main() -> None:
         for turn in turns:
             if turn.strip():
                 colored_movements = []
-                for movement in turn.split():
+                for movement in turn.split(" "):
                     parts = movement.split("-")
-                    colored_parts = [escape(parts[0])]
+                    target_zone = parts[-1]
+                    color = graph.get_zone(target_zone).color.lower()
 
-                    for z_name in parts[1:]:
-                        color = graph.get_zone(z_name).color.lower()
-                        safe_z = escape(z_name)
-
-                        if not color:
-                            colored_parts.append(safe_z)
-                        elif color == "rainbow":
-                            colors = [
-                                "red",
-                                "yellow",
-                                "green",
-                                "cyan",
-                                "blue",
-                                "magenta",
-                            ]
-                            rainbow_text = ""
-                            for i, char in enumerate(z_name):
-                                c = colors[i % len(colors)]
-                                rainbow_text += f"[{c}]{escape(char)}[/{c}]"
-                            colored_parts.append(rainbow_text)
-                        else:
-                            colored_parts.append(
-                                f"[{color}]{safe_z}[/{color}]"
-                            )
-
-                    colored_movements.append("-".join(colored_parts))
+                    safe_movement = escape(movement)
+                    if not color:
+                        colored_movements.append(safe_movement)
+                    elif color == "rainbow":
+                        colors = [
+                            "red",
+                            "yellow",
+                            "green",
+                            "cyan",
+                            "blue",
+                            "magenta",
+                        ]
+                        rainbow_text = ""
+                        i = 0
+                        while i < len(movement):
+                            c = colors[i % len(colors)]
+                            rainbow_text += f"[{c}]{movement[i]}[/{c}]"
+                            i += 1
+                        colored_movements.append(rainbow_text)
+                    else:
+                        colored_movements.append(
+                            f"[{color}]{safe_movement}[/{color}]"
+                        )
 
                 print(" ".join(colored_movements))
                 valid_turns += 1
