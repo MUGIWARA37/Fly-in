@@ -49,6 +49,9 @@ class Scheduler:
                     zone = drone.path[drone.path_index]
                 zone_count[zone] = zone_count.get(zone, 0) + 1
 
+            # Track how many drones are using each connection this turn
+            conn_count: dict[frozenset[str], int] = {}
+
             for drone in self.drones:
                 # Skip drones that already arrived
                 if drone.path_index >= len(drone.path) - 1:
@@ -67,12 +70,19 @@ class Scheduler:
                 current = drone.path[drone.path_index]
                 target = drone.path[drone.path_index + 1]
 
-                # Is the target zone full?
-                max_cap = self.graph.get_zone(target).max_drones
-                if zone_count.get(target, 0) >= max_cap:
+                # Is the target zone full
+                max_zone_cap = self.graph.get_zone(target).max_drones
+                if zone_count.get(target, 0) >= max_zone_cap:
+                    continue  # Wait
+
+                # Is the connection full
+                link = frozenset({current, target})
+                conn = self.graph.get_connection(current, target)
+                if conn_count.get(link, 0) >= conn.max_link_capacity:
                     continue  # Wait
 
                 # Move the drone
+                conn_count[link] = conn_count.get(link, 0) + 1
                 zone_count[target] = zone_count.get(target, 0) + 1
                 zone_count[current] -= 1
 

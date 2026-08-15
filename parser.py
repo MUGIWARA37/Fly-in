@@ -99,7 +99,6 @@ class MapParser:
             )
 
         if hub_type in ("start", "end"):
-            metadata.pop("zone", None)
             metadata.pop("max_drones", None)
 
         for z_name, z_data in self.zones.items():

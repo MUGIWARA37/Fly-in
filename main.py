@@ -2,7 +2,8 @@ from scheduler import Scheduler
 from dfs import dfs
 from graph import Graph
 from parser import MapParser
-from rich.console import Console
+from rich import print
+from rich.markup import escape
 import sys
 
 
@@ -53,7 +54,6 @@ def main() -> None:
 
         # 5. Output the turn-by-turn simulation (Mandatory for grading)
         valid_turns = 0
-        console = Console()
 
         for turn in turns:
             if turn.strip():
@@ -63,8 +63,9 @@ def main() -> None:
                     target_zone = parts[-1]
                     color = graph.get_zone(target_zone).color.lower()
 
+                    safe_movement = escape(movement)
                     if not color:
-                        colored_movements.append(movement)
+                        colored_movements.append(safe_movement)
                     elif color == "rainbow":
                         colors = [
                             "red",
@@ -83,10 +84,10 @@ def main() -> None:
                         colored_movements.append(rainbow_text)
                     else:
                         colored_movements.append(
-                            f"[{color}]{movement}[/{color}]"
+                            f"[{color}]{safe_movement}[/{color}]"
                         )
 
-                console.print(" ".join(colored_movements))
+                print(" ".join(colored_movements))
                 valid_turns += 1
 
         print(f"\nTotal turns: {valid_turns}")
