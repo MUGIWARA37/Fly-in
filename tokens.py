@@ -2,6 +2,7 @@ from typing import Dict, Tuple
 
 
 def extract_metadata(raw_data: str) -> Tuple[str, Dict[str, str]]:
+    """Extract metadata key-value pairs from a bracketed string."""
     raw_data = raw_data.strip()
     if "[" not in raw_data:
         return (raw_data, {})
@@ -49,6 +50,7 @@ def extract_metadata(raw_data: str) -> Tuple[str, Dict[str, str]]:
 
 
 def parse_hub_parts(content: str) -> Tuple[str, int, int]:
+    """Parse the name and coordinates of a hub from a string."""
 
     try:
         name, x_str, y_str = content.split()
@@ -58,6 +60,7 @@ def parse_hub_parts(content: str) -> Tuple[str, int, int]:
 
 
 def split_connection(connection_name: str) -> Tuple[str, str]:
+    """Split a connection string into two zone names."""
     n1, n2 = connection_name.split("-", 1)
     if not n1 or not n2 or "-" in n2:
         raise ValueError("Zone name must not containne any spaces or '-'")
@@ -65,6 +68,7 @@ def split_connection(connection_name: str) -> Tuple[str, str]:
 
 
 def validate_positive_int(line: str) -> int:
+    """Validate that a string represents a positive integer."""
     try:
         value = int(line)
         if value > 0:

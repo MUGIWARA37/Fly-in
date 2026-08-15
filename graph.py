@@ -5,7 +5,9 @@ from connection import Connection
 
 
 class Graph:
+    """Graph structure to represent the map and connections."""
     def __init__(self, parser: MapParser) -> None:
+        """Initialize the graph from a MapParser."""
         self.nb_drones = parser.nb_drones
         self.start_hub = parser.start_hub_name
         self.end_hub = parser.end_hub_name
@@ -15,6 +17,7 @@ class Graph:
         self._build_graph(parser)
 
     def _build_graph(self, parser: MapParser) -> None:
+        """Build the graph zones and connections from parser data."""
         for name, zone in parser.zones.items():
             new_zone = Zone(
                 name,
@@ -38,9 +41,11 @@ class Graph:
             self.connections.append(new_connection)
 
     def get_zone(self, name: str) -> Zone:
+        """Get a zone by its name."""
         return self.zones[name]
 
     def get_neighbors(self, zone_name: str) -> List[Zone]:
+        """Get a list of neighboring zones for a given zone."""
         lst = []
 
         for connection in self.connections:
@@ -64,6 +69,7 @@ class Graph:
         return costs.get(zone.zone_type, 1.0)
 
     def get_connection(self, zone_name_1: str, zone_name_2: str) -> Connection:
+        """Get the connection between two adjacent zones."""
         for conn in self.connections:
             names = {conn.zone_a.name, conn.zone_b.name}
             if zone_name_1 in names and zone_name_2 in names:

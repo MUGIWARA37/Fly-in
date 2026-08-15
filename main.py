@@ -8,6 +8,7 @@ import sys
 
 
 def main() -> None:
+    """Main entry point to parse, route, and simulate drone movements."""
     if len(sys.argv) != 2:
         print("Usage: python main.py <map_file>")
         return

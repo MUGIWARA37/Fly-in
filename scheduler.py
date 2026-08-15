@@ -11,6 +11,7 @@ class Scheduler:
         graph: Graph,
         paths: List[Tuple[List[str], float]],
     ) -> None:
+        """Initialize the scheduler with a graph and a list of paths."""
         self.graph = graph
         self.paths = paths
         self.drones: List[Drone] = []

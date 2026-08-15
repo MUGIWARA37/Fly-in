@@ -8,7 +8,9 @@ from exceptions import ParseError
 
 
 class MapParser:
+    """Parser for map files to extract drones, zones, and connections."""
     def __init__(self, filepath: str) -> None:
+        """Initialize the parser with the filepath."""
         self.filepath = filepath
         self.nb_drones: int | None = None
         self.start_hub_count: int = 0
@@ -23,6 +25,7 @@ class MapParser:
         self.seen_connections: set[frozenset[str]] = set()
 
     def parse(self) -> None:
+        """Parse the entire map file and populate internal state."""
         with open(self.filepath, "r") as f:
             for line_num, line in enumerate(f, start=1):
                 self.current_line = line_num
@@ -52,6 +55,7 @@ class MapParser:
         self._validate_final_state()
 
     def _parse_nb_drones(self, line: str) -> None:
+        """Parse the nb_drones line."""
 
         if self.nb_drones is not None:
             raise ParseError(
@@ -66,6 +70,7 @@ class MapParser:
             raise ParseError(self.current_line, str(e))
 
     def _parse_hub(self, line: str, hub_type: str) -> None:
+        """Parse a hub or start/end hub line."""
 
         if self.nb_drones is None:
             raise ValueError("Drones number must be declared before zones")
@@ -180,6 +185,7 @@ class MapParser:
             self.end_hub_count += 1
 
     def _parse_connection(self, line: str) -> None:
+        """Parse a connection line."""
         if self.nb_drones is None:
             raise ValueError("Drones number must be declared before zones")
 
@@ -226,6 +232,7 @@ class MapParser:
         )
 
     def _validate_final_state(self) -> None:
+        """Validate that the parsed map has all required elements."""
         if self.nb_drones is None:
             raise ParseError(
                 0, "Validation error: Missing required 'nb_drones' definition."
