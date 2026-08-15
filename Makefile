@@ -6,7 +6,7 @@ install:
 	uv sync
 
 run:
-	uv run python3 main.py maps/easy/01_linear_path.txt
+	uv run python3 main.py maps/challenger/01_the_impossible_dream.txt
 
 debug:
 	uv run python3 -m pdb main.py maps/hard/03_ultimate_challenge.txt
