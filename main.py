@@ -2,6 +2,7 @@ from scheduler import Scheduler
 from dfs import dfs
 from graph import Graph
 from parser import MapParser
+from graphical import Visualizer
 from rich import print
 from rich.markup import escape
 import sys
@@ -92,6 +93,10 @@ def main() -> None:
                 valid_turns += 1
 
         print(f"\nTotal turns: {valid_turns}")
+
+        # Launch Graphical Visualizer
+        vis = Visualizer(graph, turns)
+        vis.start()
 
     except Exception as e:
         print(f"Error: {e}")
