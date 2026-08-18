@@ -35,18 +35,12 @@ def dfs(
                     else 0
                 )
                 path.append(neighbor)
-                search(
-                    neighbor,
-                    path,
-                    current_cost + cost,
-                    priority_count + bonus,
-                )
+                search(neighbor, path, current_cost + cost,
+                       priority_count + bonus)
                 path.pop()
 
     search(start, [start], 0.0, 0)
 
-    # Sort by cost first, then prefer more priority zones
     all_paths.sort(key=lambda x: (x[1], -x[2]))
 
-    # Return without the priority count
     return [(path, cost) for path, cost, _ in all_paths]
